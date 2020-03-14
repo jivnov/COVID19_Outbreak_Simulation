@@ -1,39 +1,62 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
-<div>
+
+<div id="main_layer">
     <div id="up_layer">
         <div id="up_left_layer">
             <div class="plate" id="confirmed">
-
+                <h4>Confirmed</h4>
+                <h3 id="confirmed_num">null</h3>
             </div>
             <div class="plate" id="map">
-
+                <h4>Map</h4>
             </div>
         </div>
         <div id="up_right_layer">
             <div id="up_right_up_layer">
                 <div class="plate" id="death">
-
+                    <h4>Deaths</h4>
                 </div>
                 <div class="plate" id="recovered">
-
+                    <h4>Recovered</h4>
                 </div>
             </div>
             <div id="up_right_bottom_layer">
                 <div class="plate" id="plot">
-
+                    <h4>Plot</h4>
                 </div>
             </div>
         </div>
     </div>
     <div id="bottom_layer">
         <div class="plate" id="options">
-
+            <h4>Options</h4>
         </div>
         <div class="plate" id="simulate">
-
+            <h4>Simulate</h4>
+            <button id="simulate_btn" onclick="update()">Simulate</button>
         </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script type="module">
+
+    import * as utils from "{% static 'scripts/main_page.js' %}"
+    // btn_sim = document.getElementById("simulate_btn");
+    // btn_sim.onclick = utils.update();
+
+    let redirect_btns = {
+        // btn_id: redirect_url
+        "simulate_btn":"../session_manager",
+    };
+    for (let [btn_id, url] of Object.entries(redirect_btns)) {
+        $(btn_id).onclick = (_) => update();
+        console.log("penis")
+    }
+
+</script>
+{% endblock %}

@@ -20,4 +20,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='main'),
     path('admin/', admin.site.urls),
+    path('get_data', views.calculate),
 ]

@@ -12,11 +12,14 @@
             font-family: Roboto, sans-serif;
         }
     </style>
-    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}">
+    <script src="{% static 'scripts/main_page.js' %}"></script>
 </head>
 
 <body>
 {% block content %}
 {% endblock content %}
+{% block scripts %}
+{% endblock %}
 </body>
 </html>
