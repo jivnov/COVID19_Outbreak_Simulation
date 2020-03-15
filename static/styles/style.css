@@ -70,3 +70,7 @@ body{
 #map{
     min-width: 300px;
 }
+
+#plot{
+    margin: 10px;
+}
