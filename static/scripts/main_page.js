@@ -42,7 +42,7 @@ function update() {
         displayData(document.getElementById("confirmed"), data);
         displayData(document.getElementById("deaths"), data);
         displayData(document.getElementById("recovered"), data);
-
+        integrate_plot(document.getElementById("plot"), data)
         // setTimeout(update, 1000)
 
     })
@@ -51,4 +51,11 @@ function update() {
 function displayData(element, data) {
     console.log(data);
     element.innerText = data.value[element.id];
+}
+
+function integrate_plot(element, data) {
+
+    element.src = data.value[element.id];
+    console.log(data[element.id]);
+
 }

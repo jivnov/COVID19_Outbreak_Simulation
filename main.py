@@ -1,6 +1,6 @@
 from _collections import deque
-
-
+from plot import create_plot
+import numpy as np
 
 
 def main(data):
@@ -8,7 +8,7 @@ def main(data):
     days = int(data)
 
     infectivity = 0.0000000001
-    mortality = 0.001
+    mortality = 0.1
     recovery = 1 - mortality
     disease_duration = 14
 
@@ -23,8 +23,14 @@ def main(data):
     result = {
         "confirmed": 10,
         "deaths": 0,
-        "recovered": 0
+        "recovered": 0,
+        "plot": "0"
     }
+
+    confirmed = []
+    deaths = []
+    recovered = []
+
 
     for i in range(days):
         new_confirmed = int(healthy * infectivity * result["confirmed"])
@@ -44,5 +50,12 @@ def main(data):
 
         print("healthy: " + str(healthy) + "; confirmed: " + str(result["confirmed"]) + "; deaths: " + str(
             result["deaths"]) + "; recovered: " + str(result["recovered"]))
+
+        confirmed.append(result["confirmed"])
+        deaths.append(result["deaths"])
+        recovered.append(result["recovered"])
+
+    plot_data = [days, confirmed, deaths, recovered]
+    result["plot"] = create_plot(plot_data)
 
     return result
