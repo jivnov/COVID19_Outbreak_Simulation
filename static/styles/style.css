@@ -53,12 +53,17 @@ body{
     justify-content: space-evenly;
 }
 
-#confirmed{
-    float: right;
+
+#confirmed_plate h1{
+    color: #e15000;
 }
 
-#confirmed h3{
+#deaths_plate h1{
     color: red;
+}
+
+#recovered_plate h1{
+    color: green;
 }
 
 

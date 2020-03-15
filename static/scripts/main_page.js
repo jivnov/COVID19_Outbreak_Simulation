@@ -20,7 +20,7 @@ function sendRequest(url, data, method) {
                         resolve();
                     }
                 } else if (xhr.readyState == XMLHttpRequest.DONE) {
-                    var response = JSON.parse(xhr.responseText)
+                    var response = JSON.parse(xhr.responseText);
                     alert(response.message)
                 }
             };
@@ -35,11 +35,14 @@ function sendRequest(url, data, method) {
 
 
 function update() {
-    let value = 0.001;
+    let value = 100;
     let url = 'get_data?user_input=' + value;
     console.log("penis0");
     sendRequest(url, '', "GET").then((data) => {
-        displayData(document.getElementById("confirmed_num"), data);
+        displayData(document.getElementById("confirmed"), data);
+        displayData(document.getElementById("deaths"), data);
+        displayData(document.getElementById("recovered"), data);
+
         // setTimeout(update, 1000)
 
     })
@@ -47,5 +50,5 @@ function update() {
 
 function displayData(element, data) {
     console.log(data);
-    element.innerText = data.value;
+    element.innerText = data.value[element.id];
 }

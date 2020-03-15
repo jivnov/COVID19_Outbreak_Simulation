@@ -6,9 +6,9 @@
 <div id="main_layer">
     <div id="up_layer">
         <div id="up_left_layer">
-            <div class="plate" id="confirmed">
+            <div class="plate" id="confirmed_plate">
                 <h4>Confirmed</h4>
-                <h3 id="confirmed_num">null</h3>
+                <h1 id="confirmed">null</h1>
             </div>
             <div class="plate" id="map">
                 <h4>Map</h4>
@@ -16,11 +16,14 @@
         </div>
         <div id="up_right_layer">
             <div id="up_right_up_layer">
-                <div class="plate" id="death">
+                <div class="plate" id="deaths_plate">
                     <h4>Deaths</h4>
+                    <h1 id="deaths">null</h1>
                 </div>
-                <div class="plate" id="recovered">
+                <div class="plate" id="recovered_plate">
                     <h4>Recovered</h4>
+                    <h1 id="recovered">null</h1>
+
                 </div>
             </div>
             <div id="up_right_bottom_layer">
@@ -42,21 +45,3 @@
 </div>
 {% endblock content %}
 
-{% block scripts %}
-<script type="module">
-
-    import * as utils from "{% static 'scripts/main_page.js' %}"
-    // btn_sim = document.getElementById("simulate_btn");
-    // btn_sim.onclick = utils.update();
-
-    let redirect_btns = {
-        // btn_id: redirect_url
-        "simulate_btn":"../session_manager",
-    };
-    for (let [btn_id, url] of Object.entries(redirect_btns)) {
-        $(btn_id).onclick = (_) => update();
-        console.log("penis")
-    }
-
-</script>
-{% endblock %}
