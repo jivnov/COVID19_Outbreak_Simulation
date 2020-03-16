@@ -1,9 +1,12 @@
 from _collections import deque
 from plot import create_plot
 import numpy as np
+from country import CountryCreator
 
 
 def main(data):
+    countries_arr = CountryCreator.initialization()
+
     healthy = 7000000000
     days = int(data)
 
@@ -31,7 +34,6 @@ def main(data):
     deaths = []
     recovered = []
 
-
     for i in range(days):
         new_confirmed = int(healthy * infectivity * result["confirmed"])
         # print(result["confirmed"])
@@ -48,8 +50,8 @@ def main(data):
         result["recovered"] += new_recovered
         result["confirmed"] -= new_recovered
 
-        print("healthy: " + str(healthy) + "; confirmed: " + str(result["confirmed"]) + "; deaths: " + str(
-            result["deaths"]) + "; recovered: " + str(result["recovered"]))
+        # print("healthy: " + str(healthy) + "; confirmed: " + str(result["confirmed"]) + "; deaths: " + str(
+        #     result["deaths"]) + "; recovered: " + str(result["recovered"]))
 
         confirmed.append(result["confirmed"])
         deaths.append(result["deaths"])
