@@ -1,76 +1,121 @@
-body{
+body {
     background-color: #0f0f0f;
     color: white;
+
 }
 
-.plate{
+ html, body {
+  height: 99%;
+}
+
+.plate {
     background-color: #191919;
     border-radius: 30px;
     border: 1px solid #e15000;
     margin: 5px;
-    min-width: 150px;
-    min-height: 200px;
     text-align: center;
 }
 
-#main_layer{
+#up_layer {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#full_left_layer {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: flex-end;
+    width: 70%;
 }
 
-#up_layer{
+#up_left_layer {
+    width: 100%;
+    height: 80%;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: flex-start;
 }
 
-#up_left_layer{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-}
-
-#up_right_layer{
+#up_right_layer {
+    width: 30%;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
-#up_right_up_layer{
+#up_right_up_layer {
+    height: 55%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
 
-#up_right_bottom_layer{
+#deaths_plate {
+    width: 50%;
 
 }
 
-#bottom_layer{
+#recovered_plate {
+    width: 50%;
+
+}
+
+#plot_plate {
+    height: 45%;
+}
+
+#bottom_layer {
+    height: 20%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
 
+#options {
+    width: 80%;
+}
 
-#confirmed_plate h1{
+#simulate {
+    width: 20%;
+}
+
+#confirmed_plate {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    text-align: center;
+    width: 20%;
+}
+
+#confirmed_plate h1 {
+
+
     color: #e15000;
 }
 
-#deaths_plate h1{
+#deaths_plate h1 {
     color: red;
 }
 
-#recovered_plate h1{
+#recovered_plate h1 {
     color: green;
 }
 
 
-#map{
-    min-width: 300px;
+#map_plate {
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    /*min-width: 300px;*/
 }
 
-#plot{
+#plot {
     margin: 10px;
+
+    max-width: 90%;
+    max-height: 90%;
+
 }
