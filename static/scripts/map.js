@@ -16,12 +16,12 @@ map.on('load', function () { //On map load, we want to do some stuff
         'source-layer': 'ne_10m_admin_0_countries-76t9ly', // <--- Add the source layer name you copied here
         'type': 'fill',
         'paint': {
-            'fill-color': '#9c180e', //this is the color you want your tileset to have (I used a nice purple color)
+            'fill-color': '#340300', //this is the color you want your tileset to have (I used a nice purple color)
             'fill-outline-color': '#F2F2F2' //this helps us distinguish individual countries a bit better by giving them an outline
         }
     });
 
-    map.setFilter('countries', ['in', 'ADM0_A3_IS'].concat(['USA', 'AUS', 'NGA'])); // This line lets us filter by country codes.
+    map.setFilter('countries', ['in', 'ADM0_A3_IS'].concat(['USA', 'AUS', 'NGA', 'CHN'])); // This line lets us filter by country codes.
 
     map.on('click', 'countries', function (mapElement) {
         const countryCode = mapElement.features[0].properties.ADM0_A3_IS; // Grab the country code from the map properties.

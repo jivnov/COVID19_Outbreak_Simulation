@@ -12,6 +12,11 @@ class Country:
         self.hospital_beds = 0
         self.arrive = 0
         self.departure = 0
+        self.density = 0
+        self.confirmed = 0
+        self.deaths = 0
+        self.recovered = 0
+        self.true_cases = 0
 
 
 class CountryCreator:
@@ -53,6 +58,11 @@ class CountryCreator:
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[i].departure = tmp_arr[i]
+
+        cv = CSVReader('data/density.csv')
+        tmp_arr = cv.read([62])
+        for i in range(len(tmp_arr)):
+            countries_arr[i].density = tmp_arr[i]
 
         return countries_arr
 

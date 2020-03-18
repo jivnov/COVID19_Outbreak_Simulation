@@ -7,6 +7,31 @@ from country import CountryCreator
 def main(data):
     countries_arr = CountryCreator.initialization()
 
+
+    fatality_rate = 0.0087
+    days_to_death = 17.3
+    doubling_time = 6.18
+
+
+
+    for country in countries_arr:
+        if country.country_code =='CHN':
+            country.true_cases = 1
+
+
+    for i in range (int(data)):
+        for country in countries_arr:
+            country.true_cases = country.true_cases * 2 ** (1/doubling_time)
+
+
+
+
+
+
+
+
+
+
     healthy = 7000000000
     days = int(data)
 
