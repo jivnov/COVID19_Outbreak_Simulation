@@ -17,6 +17,11 @@ class Country:
         self.deaths = 0
         self.recovered = 0
         self.true_cases = 0
+        self.inc_cases = 0
+        self.true_cases_arr = []
+        self.inc_cases_arr = []
+        self.deaths_arr = []
+        self.recovered_arr = []
 
 
 class CountryCreator:
@@ -27,7 +32,7 @@ class CountryCreator:
         cv = CSVReader('data/population_total.csv')
         tmp_arr = cv.read([0, 1, 62])
         for i in range(0, len(tmp_arr), 3):
-            countries_arr.append(Country(tmp_arr[i], tmp_arr[i + 1], tmp_arr[i + 2]))
+            countries_arr.append(Country(tmp_arr[i], tmp_arr[i + 1], float(tmp_arr[i + 2])))
 
         cv = CSVReader('data/population014per.csv')
         tmp_arr = cv.read([62])
@@ -78,6 +83,13 @@ class CSVReader:
             reader = csv.reader(csvf, delimiter=self.delimiter, quotechar='"')
 
             for row in reader:
+                if row[1] == 'Country Code':
+                    continue
                 for c in columns:
-                    to_return_arr.append(row[c])
+                    if row[c] != '':
+                        to_return_arr.append(row[c])
+                    else:
+                        to_return_arr.append(0)
         return to_return_arr
+
+
