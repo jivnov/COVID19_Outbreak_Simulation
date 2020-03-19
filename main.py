@@ -3,28 +3,68 @@ from plot import create_plot
 import numpy as np
 from country import CountryCreator
 from seir import seir
-
+from scipy.special import binom, comb
+from decimal import *
+import math
 
 # import matplotlib.pyplot as plt
+countries_arr = CountryCreator.initialization()
+FATALITY_RATE = 0.0087
+DAYS_TO_DEATH = 17.3
+DOUBLING_TIME = 6.18
+INCUBATION_PERIOD = 5.5
+AVG_PASS_ON_PLANE = 90
+AIR_TRANSPORT_USAGE = 0.6
+ROAD_TRANSPORT_USAGE = 1 - AIR_TRANSPORT_USAGE
+
+total_arrives = 0.
+for _, country in countries_arr.items():
+    total_arrives += float(country.arrive)
+
+#
+# def binom(n,k): # better version - we don't need two products!
+#     if not 0<=k<=n: return 0
+#     b=1
+#     for t in range(min(k,n-k)):
+#         b*=n; b/=t+1; n-=1
+#     return b
+
+def infec_probability(prob_group, population, infected):
+    n = prob_group
+    probability = 0.
+    q = infected / population
+    p = 1 - q
+    prob_arr = []
+    for k in range(prob_group):
+
+        probability += binom(n, k) * p ** k * q ** (n - k)
+        prob_arr.append(probability)
+        if math.isnan(probability):
+            print("lal")
+    print(prob_arr)
+    print(probability)
+    return prob_arr, probability
+
+infec_probability(7000, 10000000, 1000)
+
+def infec(code):
+    scale = 1
+    road_dep = countries_arr[code].departure * ROAD_TRANSPORT_USAGE
+    pop = countries_arr[code].population
+    infec_people = countries_arr[code].true_cases + countries_arr[code].inc_cases
+    # while road_dep % 10 == 0 and pop % 10 == 0 and infec_people
+    # prob_arr, probability = infec_probability(countries_arr[code].departure * ROAD_TRANSPORT_USAGE, countries_arr[code].population, countries_arr[code].inc_cases + countries_arr[code].true_cases)
 
 
 def main(data):
-    countries_arr = CountryCreator.initialization()
-
-    fatality_rate = 0.0087
-    days_to_death = 17.3
-    doubling_time = 6.18
-    incubation_period = 5.5
-
-    for country in countries_arr:
-        if country.country_code == 'CHN':
-            country.true_cases = 1
+    countries_arr['CHN'].true_cases = 1
 
     for i in range(int(data)):
-        for country in countries_arr:
+        print(countries_arr)
+        for code, country in countries_arr.items():
             if country.true_cases > 0 or country.inc_cases > 0:
                 country.deaths, country.inc_cases, country.true_cases, country.recovered = seir(
-                    N=float(country.population) - float(country.deaths), alpha=1 / incubation_period, beta=0.4,
+                    N=float(country.population) - float(country.deaths), alpha=1 / INCUBATION_PERIOD, beta=0.4,
                     gamma=0.02,
                     mu=0.00001,
                     E0=country.inc_cases, I0=country.true_cases, R0=country.recovered)
@@ -38,11 +78,6 @@ def main(data):
                 country.inc_cases_arr.append(0)
                 country.recovered_arr.append(0)
 
-    for country in countries_arr:
-        if country.country_code == 'CHN':
-            print(country.true_cases)
-            print(country.recovered)
-            print(country.deaths)
             # fig = plt.figure(facecolor='w')
             # ax = fig.add_subplot(111, axisbelow=True)
             # tlin = np.linspace(0, 250, 251)
