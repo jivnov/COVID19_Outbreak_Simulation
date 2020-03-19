@@ -8,50 +8,59 @@ from decimal import *
 import math
 
 # import matplotlib.pyplot as plt
-countries_arr = CountryCreator.initialization()
+countries_arr, countries_keys = CountryCreator.initialization()
 FATALITY_RATE = 0.0087
 DAYS_TO_DEATH = 17.3
 DOUBLING_TIME = 6.18
 INCUBATION_PERIOD = 5.5
-AVG_PASS_ON_PLANE = 90
 AIR_TRANSPORT_USAGE = 0.6
 ROAD_TRANSPORT_USAGE = 1 - AIR_TRANSPORT_USAGE
 
-total_arrives = 0.
-for _, country in countries_arr.items():
-    total_arrives += float(country.arrive)
+total_road_arrives = 0
+total_air_arrives = 0
+probability_arr = [0]
+for _, target_country in countries_arr.items():
+    probability_arr.append(target_country.arrive)
+    total_air_arrives += probability_arr[-1]
+probability_arr = list(map(lambda x: x / total_air_arrives, probability_arr))
+for prob_i in range(1, len(probability_arr)):
+    probability_arr[prob_i] = probability_arr[prob_i] + probability_arr[prob_i - 1]
 
-#
-# def binom(n,k): # better version - we don't need two products!
-#     if not 0<=k<=n: return 0
-#     b=1
-#     for t in range(min(k,n-k)):
-#         b*=n; b/=t+1; n-=1
-#     return b
-
-def infec_probability(prob_group, population, infected):
-    n = prob_group
-    probability = 0.
-    q = infected / population
-    p = 1 - q
-    prob_arr = []
-    for k in range(prob_group):
-
-        probability += binom(n, k) * p ** k * q ** (n - k)
-        prob_arr.append(probability)
-        if math.isnan(probability):
-            print("lal")
-    print(prob_arr)
-    print(probability)
-    return prob_arr, probability
-
-infec_probability(7000, 10000000, 1000)
 
 def infec(code):
-    scale = 1
+    target = countries_arr[code]
     road_dep = countries_arr[code].departure * ROAD_TRANSPORT_USAGE
+    air_dep = countries_arr[code].departure * AIR_TRANSPORT_USAGE
     pop = countries_arr[code].population
     infec_people = countries_arr[code].true_cases + countries_arr[code].inc_cases
+    infec_prob = infec_people / pop
+
+
+    for _ in range(int(road_dep)):
+        if np.random.sample() < infec_prob:
+            target_prob = np.random.sample()
+            print(target.borders_prob)
+            for prob_i in range(1, len(target.borders_prob)):
+                if target.borders_prob[prob_i - 1] < target_prob < target.borders_prob[prob_i]:
+                    if countries_arr[countries_arr[code].borders[prob_i - 1]].true_cases == 0:
+                        print(countries_arr[countries_arr[code].borders[prob_i - 1]].name + " INFECTED")
+                    countries_arr[countries_arr[code].borders[prob_i - 1]].true_cases += 1
+                    countries_arr[code].true_cases -= 1
+                    break
+
+
+    for _ in range(int(air_dep)):
+        if np.random.sample() < infec_prob:
+            target_prob = np.random.sample()
+            for prob_i in range(1, len(probability_arr)-1):
+                if probability_arr[prob_i - 1] < target_prob < probability_arr[prob_i]:
+                    if(countries_arr[countries_keys[prob_i]]).true_cases == 0:
+                        print(countries_arr[countries_keys[prob_i]].name + " INFECTED")
+                    countries_arr[countries_keys[prob_i - 1]].true_cases += 1
+                    countries_arr[code].true_cases -= 1
+
+                    break
+
     # while road_dep % 10 == 0 and pop % 10 == 0 and infec_people
     # prob_arr, probability = infec_probability(countries_arr[code].departure * ROAD_TRANSPORT_USAGE, countries_arr[code].population, countries_arr[code].inc_cases + countries_arr[code].true_cases)
 
@@ -60,9 +69,11 @@ def main(data):
     countries_arr['CHN'].true_cases = 1
 
     for i in range(int(data)):
-        print(countries_arr)
+        print("DAY " + str(i))
         for code, country in countries_arr.items():
+
             if country.true_cases > 0 or country.inc_cases > 0:
+
                 country.deaths, country.inc_cases, country.true_cases, country.recovered = seir(
                     N=float(country.population) - float(country.deaths), alpha=1 / INCUBATION_PERIOD, beta=0.4,
                     gamma=0.02,
@@ -72,12 +83,21 @@ def main(data):
                 country.deaths_arr.append(country.deaths)
                 country.inc_cases_arr.append(country.inc_cases)
                 country.recovered_arr.append(country.recovered)
+
+                infec(code)
+
+
+
+
             else:
                 country.true_cases_arr.append(0)
                 country.deaths_arr.append(0)
                 country.inc_cases_arr.append(0)
                 country.recovered_arr.append(0)
 
+    print(countries_arr["POL"].true_cases)
+    print(countries_arr["POL"].deaths)
+    print(countries_arr["POL"].recovered)
             # fig = plt.figure(facecolor='w')
             # ax = fig.add_subplot(111, axisbelow=True)
             # tlin = np.linspace(0, 250, 251)
@@ -155,3 +175,6 @@ def main(data):
     result["plot"] = create_plot(plot_data)
 
     return result
+
+
+main(120)
