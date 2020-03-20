@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def deriv(y, t, N, alpha, beta, gamma, mu):
     S, E, I, R = y
-    dSdt = - mu * S - beta * (I / N) * S  # + mu * N
+    dSdt = - beta * (I / N) * S  # + mu * N
     dEdt = beta * (I / N) * S - (mu + alpha) * E
     dIdt = alpha * E - (gamma + mu) * I
     dRdt = gamma * I - mu * R

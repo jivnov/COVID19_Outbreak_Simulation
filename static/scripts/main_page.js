@@ -35,9 +35,8 @@ function sendRequest(url, data, method) {
 
 
 function update() {
-    let value = 100;
+    let value = 60;
     let url = 'get_data?user_input=' + value;
-    console.log("penis0");
     sendRequest(url, '', "GET").then((data) => {
         displayData(document.getElementById("confirmed"), data);
         displayData(document.getElementById("deaths"), data);

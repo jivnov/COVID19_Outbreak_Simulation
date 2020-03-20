@@ -115,7 +115,7 @@ class CountryCreator:
         # countries_arr.pop("WLD")
 
         for _, country in countries_arr.items():
-            probability_arr = []
+            probability_arr = [0]
             total_road_arrives = 0
             for target_country in country.borders:
                 probability_arr.append(countries_arr[target_country].arrive)
