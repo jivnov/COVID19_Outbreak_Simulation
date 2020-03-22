@@ -28,15 +28,17 @@ for prob_i in range(1, len(probability_arr)):
     probability_arr[prob_i] = probability_arr[prob_i] + probability_arr[prob_i - 1]
 
 
-time0 = time.time()
-countries_arr['CHN'].true_cases = 1
+
+
 
 total_cases_arr = []
 total_deaths_arr = []
 total_recovered_arr = []
-
+infected_countries_arr = []
 result_arr = []
 
+countries_arr['CHN'].true_cases = 1
+infected_countries_arr.append('CHN')
 
 def infec(code):
     target = countries_arr[code]
@@ -55,6 +57,7 @@ def infec(code):
                 if target.borders_prob[prob_i - 1] < target_prob < target.borders_prob[prob_i]:
                     if (countries_arr[countries_arr[code].borders[prob_i - 1]]).true_cases == 0:
                         print(countries_arr[countries_arr[code].borders[prob_i - 1]].name + " INFECTED")
+                        infected_countries_arr.append(countries_arr[code].borders[prob_i - 1])
                     countries_arr[countries_arr[code].borders[prob_i - 1]].true_cases += 1
                     countries_arr[code].true_cases -= 1
                     break
@@ -67,6 +70,7 @@ def infec(code):
                 if probability_arr[prob_i - 1] < target_prob < probability_arr[prob_i]:
                     if(countries_arr[countries_keys[prob_i]]).true_cases == 0:
                         print(countries_arr[countries_keys[prob_i]].name + " INFECTED")
+                        infected_countries_arr.append(countries_keys[prob_i])
                     countries_arr[countries_keys[prob_i]].true_cases += 1
                     countries_arr[code].true_cases -= 1
 
@@ -120,15 +124,14 @@ def main(data):
 
             day_cases += country.true_cases
             day_deaths += country.deaths
-
             day_recovered += country.recovered
 
         total_cases_arr.append(day_cases)
         total_deaths_arr.append(day_deaths)
         total_recovered_arr.append(day_recovered)
-        total_cases += total_cases_arr[-1]
-        total_deaths += total_deaths_arr[-1]
-        total_recovered += total_recovered_arr[-1]
+        total_cases = total_cases_arr[-1]
+        total_deaths = total_deaths_arr[-1]
+        total_recovered = total_recovered_arr[-1]
 
         print(countries_arr["POL"].true_cases)
         print(countries_arr["POL"].deaths)
@@ -171,12 +174,17 @@ def main(data):
     # deaths_deque = deque()
     # for i in range(14):
     #     deaths_deque.append(0)
+        infected_countries_str = ""
+        for ic in infected_countries_arr:
+            infected_countries_str += ic
+            infected_countries_str += " "
 
         result = {
             "confirmed": int(total_cases),
             "deaths": int(total_deaths),
             "recovered": int(total_recovered),
-            "plot": "0"
+            "plot": "0",
+            "infected_countries_arr": infected_countries_arr
         }
 
     # confirmed = []
@@ -209,7 +217,7 @@ def main(data):
         plot_data = [days, total_cases_arr, total_deaths_arr, total_recovered_arr]
         result["plot"] = create_plot(plot_data)
 
-        print(time.time()-time0)
+
         yield result
 
 

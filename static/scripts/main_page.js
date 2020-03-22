@@ -1,3 +1,5 @@
+// import * as map from "./map"
+
 /**
  * Sends request and executes callback when request is received.
  * @param {string} url - endpoint
@@ -5,6 +7,8 @@
  * @param {string} method - request method
  * @returns new Promise
  */
+
+
 function sendRequest(url, data, method) {
     return new Promise(function (resolve, reject) {
             var xhr = new XMLHttpRequest();
@@ -35,10 +39,11 @@ function sendRequest(url, data, method) {
 
 
 async function update() {
-    let days = 150;
+    let days = 360;
     let value = "init " + days;
     let url = 'get_data?user_input=' + value;
-    for (i = 0; i < days; i++) {
+    let infected = ['USA', 'AUS', 'NGA', 'CHN'];
+    for (let i = 0; i < days; i++) {
 
 
                 await sendRequest(url, '', "GET").then((data) => {
@@ -46,10 +51,12 @@ async function update() {
                     displayData(document.getElementById("deaths"), data);
                     displayData(document.getElementById("recovered"), data);
                     integrate_plot(document.getElementById("plot"), data)
+                    colorize(data.value["infected_countries_arr"])
 
 
                 })
                 url = 'get_data?user_input=' + days;
+                // colorize(infected)
 
 
 
@@ -73,45 +80,3 @@ function integrate_plot(element, data) {
 }
 
 
-var mapConfig = {
-    'layers': [{
-        'type': 'cartodb',
-        'options': {
-            'cartocss_version': '2.1.1',
-            'cartocss': '#layer { polygon-fill: #F00; }',
-            'sql': 'select * from european_countries_e where area > 0'
-        }
-    }]
-};
-
-var cartoDBSource = new CartoDB({
-    account: 'documentation',
-    config: mapConfig
-});
-
-var map = new Map({
-    layers: [
-        new TileLayer({
-            source: new OSM()
-        }),
-        new TileLayer({
-            source: cartoDBSource
-        })
-    ],
-    target: 'map',
-    view: new View({
-        center: [0, 0],
-        zoom: 2
-    })
-});
-
-function setArea(n) {
-    mapConfig.layers[0].options.sql =
-        'select * from european_countries_e where area > ' + n;
-    cartoDBSource.setConfig(mapConfig);
-}
-
-
-document.getElementById('country-area').addEventListener('change', function () {
-    setArea(this.value);
-});

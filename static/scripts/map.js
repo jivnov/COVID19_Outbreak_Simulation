@@ -1,5 +1,5 @@
 mapboxgl.accessToken = config.MY_KEY;
-
+let infected = ['USA', 'AUS', 'NGA', 'CHN'];
 var map = new mapboxgl.Map({
     container: 'map', //this is the id of the container you want your map in
     style: 'mapbox://styles/mapbox/dark-v10', // this controls the style of the map. Want to see more? Try changing 'light' to 'simple'.
@@ -21,11 +21,13 @@ map.on('load', function () { //On map load, we want to do some stuff
         }
     });
 
-    map.setFilter('countries', ['in', 'ADM0_A3_IS'].concat(['USA', 'AUS', 'NGA', 'CHN'])); // This line lets us filter by country codes.
+
+
+    map.setFilter('countries', ['in', 'ADM0_A3_IS']); // This line lets us filter by country codes.
 
     map.on('click', 'countries', function (mapElement) {
         const countryCode = mapElement.features[0].properties.ADM0_A3_IS; // Grab the country code from the map properties.
-
+        // map.setFilter('countries', ['in', 'ADM0_A3_IS'].concat([countryCode]));
         fetch(`https://restcountries.eu/rest/v2/alpha/${countryCode}`) // Using tempalate tags to create the API request
             .then((data) => data.json()) //fetch returns an object with a .json() method, which returns a promise
             .then((country) => { //country contains the data from the API request
@@ -47,3 +49,7 @@ map.on('load', function () { //On map load, we want to do some stuff
             });
     });
 });
+
+function colorize(codes) {
+    map.setFilter('countries', ['in', 'ADM0_A3_IS'].concat(codes));
+}

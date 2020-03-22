@@ -18,10 +18,10 @@ class Country:
         self.recovered = 0
         self.true_cases = 0
         self.inc_cases = 0
-        self.true_cases_arr = []
-        self.inc_cases_arr = []
-        self.deaths_arr = []
-        self.recovered_arr = []
+        self.true_cases_arr = [0]
+        self.inc_cases_arr = [0]
+        self.deaths_arr = [0]
+        self.recovered_arr = [0]
         self.air_departures = 0
         self.borders = []
         self.borders_prob = []
