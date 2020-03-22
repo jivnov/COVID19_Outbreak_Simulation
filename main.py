@@ -28,6 +28,16 @@ for prob_i in range(1, len(probability_arr)):
     probability_arr[prob_i] = probability_arr[prob_i] + probability_arr[prob_i - 1]
 
 
+time0 = time.time()
+countries_arr['CHN'].true_cases = 1
+
+total_cases_arr = []
+total_deaths_arr = []
+total_recovered_arr = []
+
+result_arr = []
+
+
 def infec(code):
     target = countries_arr[code]
     road_dep = countries_arr[code].departure * ROAD_TRANSPORT_USAGE
@@ -70,19 +80,14 @@ def main(data):
 
 
 
-    time0 = time.time()
-    countries_arr['CHN'].true_cases = 1
 
-    total_cases_arr = []
-    total_deaths_arr = []
-    total_recovered_arr = []
+
+
     total_cases = 0
     total_deaths = 0
     total_recovered = 0
-
-
-    for i in range(int(data)):
-        print("DAY " + str(i))
+    for day in range(1, int(data)+1):
+        print("DAY " + str(day))
         day_deaths = 0
         day_cases = 0
         day_recovered = 0
@@ -125,9 +130,9 @@ def main(data):
         total_deaths += total_deaths_arr[-1]
         total_recovered += total_recovered_arr[-1]
 
-    print(countries_arr["POL"].true_cases)
-    print(countries_arr["POL"].deaths)
-    print(countries_arr["POL"].recovered)
+        print(countries_arr["POL"].true_cases)
+        print(countries_arr["POL"].deaths)
+        print(countries_arr["POL"].recovered)
             # fig = plt.figure(facecolor='w')
             # ax = fig.add_subplot(111, axisbelow=True)
             # tlin = np.linspace(0, 250, 251)
@@ -152,7 +157,7 @@ def main(data):
             # plt.show()
 
     # healthy = 7000000000
-    days = int(data)
+        days = day
     #
     # infectivity = 0.0000000001
     # mortality = 0.1
@@ -167,12 +172,12 @@ def main(data):
     # for i in range(14):
     #     deaths_deque.append(0)
 
-    result = {
-        "confirmed": int(total_cases),
-        "deaths": int(total_deaths),
-        "recovered": int(total_recovered),
-        "plot": "0"
-    }
+        result = {
+            "confirmed": int(total_cases),
+            "deaths": int(total_deaths),
+            "recovered": int(total_recovered),
+            "plot": "0"
+        }
 
     # confirmed = []
     # deaths = []
@@ -201,11 +206,26 @@ def main(data):
     #     deaths.append(result["deaths"])
     #     recovered.append(result["recovered"])
 
-    plot_data = [days, total_cases_arr, total_deaths_arr, total_recovered_arr]
-    result["plot"] = create_plot(plot_data)
+        plot_data = [days, total_cases_arr, total_deaths_arr, total_recovered_arr]
+        result["plot"] = create_plot(plot_data)
 
-    print(time.time()-time0)
-    return result
+        print(time.time()-time0)
+        yield result
 
 
-# main(120)
+
+def connect(get):
+    if "init" in get:
+        days = get.split()[1]
+        print(days)
+        data = main(days)
+        result_arr.append(data)
+
+    print(result_arr)
+    return next(result_arr[0])
+
+
+#
+# tmp = main(10)
+# for i in range(10):
+#     print(next(tmp))

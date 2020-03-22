@@ -13,8 +13,12 @@ def index(request):
     context = {}
     return render(request, 'main_page/index.html', context)
 
+global value
 
 def calculate(request):
-    value = request.GET.get('user_input')
-    value = main.main(value)
+    global value
+    get = request.GET.get('user_input')
+
+    value = main.connect(get)
     return JsonResponse({'value': value})
+
