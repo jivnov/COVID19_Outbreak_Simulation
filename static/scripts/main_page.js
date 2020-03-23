@@ -50,8 +50,9 @@ async function update() {
                     displayData(document.getElementById("confirmed"), data);
                     displayData(document.getElementById("deaths"), data);
                     displayData(document.getElementById("recovered"), data);
-                    integrate_plot(document.getElementById("plot"), data)
-                    colorize(data.value["infected_countries_arr"])
+                    integrate_plot(document.getElementById("plot"), data);
+                    colorize(data.value["infected_countries_arr"]);
+                    document.getElementById("day_target").innerText = "DAY: " + i
 
 
                 })

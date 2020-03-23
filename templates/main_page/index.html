@@ -12,49 +12,58 @@
 
 
 {% block content %}
+<div id="main">
+    <div id="up_bar" class="plate">
+        <p id="name">COVID19 OUTBREAK SIMULATION</p>
 
-
-<div id="up_layer">
-    <div id="full_left_layer">
-        <div id="up_left_layer">
-            <div class="plate" id="confirmed_plate">
-                <h4>Confirmed</h4>
-                <h1 id="confirmed">null</h1>
-            </div>
-            <div class="plate" id="map_plate">
-                <div id='map'></div>
-
-            </div>
-        </div>
-        <div id="bottom_layer">
-            <div class="plate" id="options">
-                <h4>Options</h4>
-            </div>
-            <div class="plate" id="simulate">
-                <button id="simulate_btn" onclick="update()">SIMULATE</button>
-            </div>
-        </div>
     </div>
-    <div id="up_right_layer">
-        <div id="up_right_up_layer">
-            <div class="plate" id="deaths_plate">
-                <h4>Deaths</h4>
-                <h1 id="deaths">null</h1>
-            </div>
-            <div class="plate" id="recovered_plate">
-                <h4>Recovered</h4>
-                <h1 id="recovered">null</h1>
+    <div id="up_layer">
+        <div id="full_left_layer">
+            <div id="up_left_layer">
+                <div class="plate" id="confirmed_plate">
+                    <h4>Confirmed</h4>
+                    <h1 id="confirmed">null</h1>
+                </div>
+                <div class="plate" id="map_plate">
+                    <div id="map_with_text">
+                    <div id='map'>
 
+                    </div>
+                    <div id="map_text">
+                        <p id="day_target">Day: 0</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div id="bottom_layer">
+                <div class="plate" id="options">
+                    <h4>Options</h4>
+                </div>
+                <div class="plate" id="simulate">
+                    <button id="simulate_btn" onclick="update()">SIMULATE</button>
+                </div>
             </div>
         </div>
+        <div id="up_right_layer">
+            <div id="up_right_up_layer">
+                <div class="plate" id="deaths_plate">
+                    <h4>Deaths</h4>
+                    <h1 id="deaths">null</h1>
+                </div>
+                <div class="plate" id="recovered_plate">
+                    <h4>Recovered</h4>
+                    <h1 id="recovered">null</h1>
 
-        <div class="plate" id="plot_plate">
-            <img id="plot" src="" alt=""/>
+                </div>
+            </div>
+
+            <div class="plate" id="plot_plate">
+                <img id="plot" src="" alt=""/>
+            </div>
+
         </div>
-
     </div>
 </div>
-
 <script src="{% static 'scripts/map.js' %}"></script>
 {% endblock content %}
 

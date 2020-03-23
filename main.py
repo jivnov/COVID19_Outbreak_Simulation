@@ -13,7 +13,7 @@ countries_arr, countries_keys = CountryCreator.initialization()
 FATALITY_RATE = 0.0087
 DAYS_TO_DEATH = 17.3
 DOUBLING_TIME = 6.18
-INCUBATION_PERIOD = 5.5
+INCUBATION_PERIOD = 10
 AIR_TRANSPORT_USAGE = 0.6
 ROAD_TRANSPORT_USAGE = 1 - AIR_TRANSPORT_USAGE
 
@@ -104,7 +104,7 @@ def main(data):
                 country.deaths, country.inc_cases, country.true_cases, country.recovered = seir(
                     N=float(country.population) - float(country.deaths), alpha=1 / INCUBATION_PERIOD, beta=0.4,
                     gamma=0.02,
-                    mu=0.00001,
+                    mu=0.01,
                     E0=country.inc_cases, I0=country.true_cases, R0=country.recovered)
                 country.true_cases_arr.append(country.true_cases)
                 country.deaths_arr.append(country.deaths)
