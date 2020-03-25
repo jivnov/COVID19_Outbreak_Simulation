@@ -1,15 +1,22 @@
 from plot import create_plot
 import numpy as np
 from country import CountryCreator
-from seir import seir
+from seir import seibqhr
 
 countries_arr, countries_keys = CountryCreator.initialization()
-FATALITY_RATE = 0.0087
+FATALITY_RATE = 0.01
 DAYS_TO_DEATH = 17.3
 DOUBLING_TIME = 6.18
-INCUBATION_PERIOD = 7
 AIR_TRANSPORT_USAGE = 0.6
 ROAD_TRANSPORT_USAGE = 1 - AIR_TRANSPORT_USAGE
+
+INCUBATION_PERIOD = 7
+INCUBATION_RATE = 1 / INCUBATION_PERIOD
+QUARANTINE_DURATION = 14
+QUARANTINE_RATE = 1 / QUARANTINE_DURATION
+
+RECOVERY_RATE_INFECTED = 0.33
+RECOVERY_RATE_CONFIRMED = 0.15
 
 total_road_arrives = 0
 total_air_arrives = 0
@@ -27,7 +34,13 @@ total_recovered_arr = []
 infected_countries_arr = []
 data_transmitter = 0
 
-countries_arr['CHN'].true_cases = 1
+countries_arr['CHN'].infected = 935
+countries_arr['CHN'].exposed = 4000
+countries_arr['CHN'].suspected = 800
+countries_arr['CHN'].quarantined = 2132
+countries_arr['CHN'].confirmed = 494
+countries_arr['CHN'].susceptible = countries_arr['CHN'].population - 8361
+
 infected_countries_arr.append('CHN')
 
 
@@ -36,7 +49,7 @@ def infec(code):
     road_dep = countries_arr[code].departure * ROAD_TRANSPORT_USAGE
     air_dep = countries_arr[code].departure * AIR_TRANSPORT_USAGE
     pop = countries_arr[code].population
-    infec_people = countries_arr[code].true_cases + countries_arr[code].inc_cases
+    infec_people = countries_arr[code].infected + countries_arr[code].exposed
     infec_prob = infec_people / pop
 
     for _ in range(int(road_dep)):
@@ -45,11 +58,11 @@ def infec(code):
 
             for prob_i in range(1, len(target.borders_prob)):
                 if target.borders_prob[prob_i - 1] < target_prob < target.borders_prob[prob_i]:
-                    if (countries_arr[countries_arr[code].borders[prob_i - 1]]).true_cases == 0:
+                    if (countries_arr[countries_arr[code].borders[prob_i - 1]]).infected == 0:
                         print(countries_arr[countries_arr[code].borders[prob_i - 1]].name + " INFECTED")
                         infected_countries_arr.append(countries_arr[code].borders[prob_i - 1])
-                    countries_arr[countries_arr[code].borders[prob_i - 1]].true_cases += 1
-                    countries_arr[code].true_cases -= 1
+                    countries_arr[countries_arr[code].borders[prob_i - 1]].infected += 1
+                    countries_arr[code].infected -= 1
                     break
 
     for _ in range(int(air_dep)):
@@ -57,11 +70,11 @@ def infec(code):
             target_prob = np.random.sample()
             for prob_i in range(1, len(probability_arr) - 1):
                 if probability_arr[prob_i - 1] < target_prob < probability_arr[prob_i]:
-                    if (countries_arr[countries_keys[prob_i]]).true_cases == 0:
+                    if (countries_arr[countries_keys[prob_i]]).infected == 0:
                         print(countries_arr[countries_keys[prob_i]].name + " INFECTED")
                         infected_countries_arr.append(countries_keys[prob_i])
-                    countries_arr[countries_keys[prob_i]].true_cases += 1
-                    countries_arr[code].true_cases -= 1
+                    countries_arr[countries_keys[prob_i]].infected += 1
+                    countries_arr[code].infected -= 1
 
                     break
 
@@ -73,19 +86,38 @@ def main(data):
         day_cases = 0
         day_recovered = 0
         for code, country in countries_arr.items():
-            if code == 'CHN':
-                print(country.deaths)
 
-            if country.true_cases > 0 or country.inc_cases > 0:
+            if country.infected > 0 or country.exposed > 0:
 
-                country.deaths, country.inc_cases, country.true_cases, country.recovered = seir(
-                    N=float(country.population) - float(country.deaths), alpha=1 / INCUBATION_PERIOD, beta=0.35,
-                    gamma=0.03,
-                    mu=0.01,
-                    E0=country.inc_cases, I0=country.true_cases, R0=country.recovered)
-                country.true_cases_arr.append(country.true_cases)
+                country.susceptible, country.exposed, country.infected, country.suspected, country.quarantined, \
+                country.confirmed, country.recovered, country.contact_rate_0, country.quarantined_rate_exposed_0, \
+                country.infected_to_confirmed_min = seibqhr(c0=country.contact_rate_0, cb=country.contact_rate_min,
+                                                            r1=country.contact_rate_exp_rate,
+                                                            beta=country.transmission_prob,
+                                                            q0=country.quarantined_rate_exposed_0,
+                                                            qm=country.quarantined_rate_exposed_max,
+                                                            r2=country.quarantined_rate_exp_rate,
+                                                            m=country.susceptible_to_suspected_rate,
+                                                            b=country.detection_rate,
+                                                            f=country.suspected_to_confirmed, sigma=INCUBATION_RATE,
+                                                            lamb=QUARANTINE_RATE,
+                                                            deltaI0=country.infected_to_confirmed_min,
+                                                            deltaIf=country.infected_to_confirmed_max,
+                                                            r3=country.diagnose_speed_exp_rate,
+                                                            gammaI=RECOVERY_RATE_INFECTED,
+                                                            gammaH=RECOVERY_RATE_CONFIRMED,
+                                                            alpha=country.death_rate,
+                                                            S0=country.susceptible, E0=country.exposed,
+                                                            I0=country.infected,
+                                                            B0=country.suspected, Q0=country.quarantined,
+                                                            H0=country.confirmed,
+                                                            R0=country.recovered)
+
+                country.deaths = country.population - country.confirmed - country.exposed - country.infected - \
+                                 country.recovered - country.quarantined - country.suspected - country.susceptible
+                country.infected_arr.append(country.infected + country.exposed + country.confirmed)
                 country.deaths_arr.append(country.deaths)
-                country.inc_cases_arr.append(country.inc_cases)
+                country.exposed_arr.append(country.exposed)
                 country.recovered_arr.append(country.recovered)
 
                 infec(code)
@@ -94,12 +126,12 @@ def main(data):
 
 
             else:
-                country.true_cases_arr.append(0)
+                country.infected_arr.append(0)
                 country.deaths_arr.append(0)
-                country.inc_cases_arr.append(0)
+                country.exposed_arr.append(0)
                 country.recovered_arr.append(0)
 
-            day_cases += country.true_cases
+            day_cases = day_cases + country.confirmed + country.infected
             day_deaths += country.deaths
             day_recovered += country.recovered
 
@@ -110,7 +142,8 @@ def main(data):
         total_deaths = total_deaths_arr[-1]
         total_recovered = total_recovered_arr[-1]
 
-        print(countries_arr["POL"].true_cases)
+        print(countries_arr["POL"].infected)
+        print(countries_arr["POL"].confirmed)
         print(countries_arr["POL"].deaths)
         print(countries_arr["POL"].recovered)
 

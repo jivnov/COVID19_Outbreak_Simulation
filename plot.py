@@ -30,7 +30,7 @@ def create_plot(data):
 
     ax.plot(range(data[0]), data[1], c='#e15000')
     ax.plot(range(data[0]), data[2], c='r')
-    ax.plot(range(data[0]), data[3], c='g')
+    # ax.plot(range(data[0]), data[3], c='g')
 
     # Save it to a temporary buffer.
     buf = BytesIO()

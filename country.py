@@ -16,15 +16,33 @@ class Country:
         self.confirmed = 0
         self.deaths = 0
         self.recovered = 0
-        self.true_cases = 0
-        self.inc_cases = 0
-        self.true_cases_arr = [0]
-        self.inc_cases_arr = [0]
+        self.infected = 0
+        self.exposed = 0
+        self.susceptible = population
+        self.quarantined = 0
+        self.suspected = 0
+        self.infected_arr = [0]
+        self.exposed_arr = [0]
         self.deaths_arr = [0]
         self.recovered_arr = [0]
         self.air_departures = 0
         self.borders = []
         self.borders_prob = []
+
+        self.contact_rate_0 = 14.781
+        self.contact_rate_min = 8.0
+        self.contact_rate_exp_rate = 0.15
+        self.transmission_prob = 0.1911
+        self.quarantined_rate_exposed_0 = 0.0001
+        self.quarantined_rate_exposed_max = 0.98
+        self.quarantined_rate_exp_rate = 0.1531
+        self.susceptible_to_suspected_rate = 1.002 * 10 ** -7
+        self.detection_rate = 0.07
+        self.suspected_to_confirmed = 0.5
+        self.infected_to_confirmed_min = 0.1326
+        self.infected_to_confirmed_max = 2.5
+        self.diagnose_speed_exp_rate = 0.2
+        self.death_rate = 0.01
 
 
 class CountryCreator:
@@ -103,8 +121,6 @@ class CountryCreator:
                     tmp_arr[i + 1]] in countries_arr.keys():
                     countries_arr[countries_code_2_to_3_dict[tmp_arr[i]]].borders.append(
                         countries_code_2_to_3_dict[tmp_arr[i + 1]])
-
-
 
         # countries_arr.pop("LMY")
         # countries_arr.pop("LMC")
