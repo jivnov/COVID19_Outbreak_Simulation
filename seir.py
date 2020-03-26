@@ -54,13 +54,7 @@ def seibqhr(c0, cb, r1, beta, q0, qm, r2, m, b, f, sigma, lamb, deltaI0, deltaIf
     c = (c0 - cb) * math.e ** -r1 + cb
     q = (q0 - qm) * math.e ** -r2 + qm
     deltaI = 1 / ((1 / deltaI0 - 1 / deltaIf) * math.e ** -r3 + 1 / deltaIf)
-    print()
-    print()
-    print(c)
-    print(q)
-    print(deltaI)
-    print()
-    print()
+
     ret = odeint(deriv, y0, t, args=(N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alpha))
     S, E, I, B, Q, H, R = ret.T
 

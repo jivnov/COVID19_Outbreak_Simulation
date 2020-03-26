@@ -31,17 +31,18 @@ class Country:
 
         self.contact_rate_0 = 14.781
         self.contact_rate_min = 8.0
-        self.contact_rate_exp_rate = 0.15
-        self.transmission_prob = 0.1911
-        self.quarantined_rate_exposed_0 = 0.0001
+        self.contact_rate_exp_rate = 0.0  # 0.15
+        self.transmission_prob = 0.1  # 0.1911
+        self.quarantined_rate_exposed_0 = 0.00001  # 0.0001
         self.quarantined_rate_exposed_max = 0.98
-        self.quarantined_rate_exp_rate = 0.1531
-        self.susceptible_to_suspected_rate = 1.002 * 10 ** -7
+        self.quarantined_rate_exp_rate = 0.0000001  # 0.1531
+        self.susceptible_to_suspected_rate = 0.2 * 10 ** -7  # 1.002 * 10 **-7
         self.detection_rate = 0.07
-        self.suspected_to_confirmed = 0.5
+        self.suspected_to_confirmed = 0.0001  # 0.5 - iv
+        #TODO func to count suspected_to_confirmed_rate
         self.infected_to_confirmed_min = 0.1326
         self.infected_to_confirmed_max = 2.5
-        self.diagnose_speed_exp_rate = 0.2
+        self.diagnose_speed_exp_rate = 0  # 0.2
         self.death_rate = 0.01
 
 

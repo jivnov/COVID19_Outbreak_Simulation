@@ -2,6 +2,7 @@ from plot import create_plot
 import numpy as np
 from country import CountryCreator
 from seir import seibqhr
+import time
 
 countries_arr, countries_keys = CountryCreator.initialization()
 FATALITY_RATE = 0.01
@@ -34,12 +35,16 @@ total_recovered_arr = []
 infected_countries_arr = []
 data_transmitter = 0
 
-countries_arr['CHN'].infected = 935
-countries_arr['CHN'].exposed = 4000
-countries_arr['CHN'].suspected = 800
-countries_arr['CHN'].quarantined = 2132
-countries_arr['CHN'].confirmed = 494
-countries_arr['CHN'].susceptible = countries_arr['CHN'].population - 8361
+countries_arr['CHN'].infected = 1
+# countries_arr['CHN'].exposed = 4000
+# countries_arr['CHN'].suspected = 800
+# countries_arr['CHN'].quarantined = 2132
+# countries_arr['CHN'].confirmed = 494
+# countries_arr['CHN'].susceptible = countries_arr['CHN'].population - 8361
+# countries_arr['CHN'].contact_rate_exp_rate = 0.15
+# countries_arr['CHN'].quarantined_rate_exp_rate = 0.1531
+# countries_arr['CHN'].diagnose_speed_exp_rate = 0.2
+
 
 infected_countries_arr.append('CHN')
 
@@ -63,6 +68,10 @@ def infec(code):
                         infected_countries_arr.append(countries_arr[code].borders[prob_i - 1])
                     countries_arr[countries_arr[code].borders[prob_i - 1]].infected += 1
                     countries_arr[code].infected -= 1
+
+                    countries_arr[countries_arr[code].borders[prob_i - 1]].contact_rate_exp_rate = 0.01
+                    countries_arr[countries_arr[code].borders[prob_i - 1]].quarantined_rate_exp_rate = 0.01
+                    countries_arr[countries_arr[code].borders[prob_i - 1]].diagnose_speed_exp_rate = 0.01
                     break
 
     for _ in range(int(air_dep)):
@@ -76,6 +85,9 @@ def infec(code):
                     countries_arr[countries_keys[prob_i]].infected += 1
                     countries_arr[code].infected -= 1
 
+                    countries_arr[countries_keys[prob_i]].contact_rate_exp_rate = 0.01
+                    countries_arr[countries_keys[prob_i]].quarantined_rate_exp_rate = 0.01
+                    countries_arr[countries_keys[prob_i]].diagnose_speed_exp_rate = 0.01
                     break
 
 
@@ -85,6 +97,12 @@ def main(data):
         day_deaths = 0
         day_cases = 0
         day_recovered = 0
+
+        if day == 47:
+            countries_arr['CHN'].contact_rate_exp_rate = 0.15
+            countries_arr['CHN'].quarantined_rate_exp_rate = 0.1531
+            countries_arr['CHN'].diagnose_speed_exp_rate = 0.2
+
         for code, country in countries_arr.items():
 
             if country.infected > 0 or country.exposed > 0:
@@ -115,7 +133,8 @@ def main(data):
 
                 country.deaths = country.population - country.confirmed - country.exposed - country.infected - \
                                  country.recovered - country.quarantined - country.suspected - country.susceptible
-                country.infected_arr.append(country.infected + country.exposed + country.confirmed)
+
+                country.infected_arr.append(country.confirmed + country.infected + country.exposed)
                 country.deaths_arr.append(country.deaths)
                 country.exposed_arr.append(country.exposed)
                 country.recovered_arr.append(country.recovered)
@@ -142,10 +161,14 @@ def main(data):
         total_deaths = total_deaths_arr[-1]
         total_recovered = total_recovered_arr[-1]
 
-        print(countries_arr["POL"].infected)
-        print(countries_arr["POL"].confirmed)
-        print(countries_arr["POL"].deaths)
-        print(countries_arr["POL"].recovered)
+        print(countries_arr["CHN"].infected)
+        print(countries_arr["CHN"].confirmed)
+        print(countries_arr["CHN"].quarantined)
+        print(countries_arr["CHN"].exposed)
+        print(countries_arr["CHN"].suspected)
+        print(countries_arr["CHN"].quarantined_rate_exposed_0)
+
+
 
         days = day
 
