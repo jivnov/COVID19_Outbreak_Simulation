@@ -1,8 +1,7 @@
-from plot import create_plot
+from static.simulation.plot import create_plot
 import numpy as np
-from country import CountryCreator
-from seir import seibqhr
-import time
+from static.simulation.country import CountryCreator
+from static.simulation.seir import seibqhr
 
 countries_arr, countries_keys = CountryCreator.initialization()
 FATALITY_RATE = 0.01

@@ -1,8 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-import main
+from static.simulation import main
 
 
 # Create your views here.

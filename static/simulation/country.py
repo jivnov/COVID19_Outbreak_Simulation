@@ -53,7 +53,7 @@ class CountryCreator:
         countries_keys = []
         countries_code_2_to_3_dict = {}
         countries_code_3_to_2_dict = {}
-        cv = CSVReader('data/population_total.csv')
+        cv = CSVReader('static/data/population_total.csv')
         tmp_arr = cv.read([0, 1, 62])
         for i in range(0, len(tmp_arr), 3):
             key_value = tmp_arr[i + 1]
@@ -61,7 +61,7 @@ class CountryCreator:
                                       Country(tmp_arr[i], tmp_arr[i + 1], float(tmp_arr[i + 2]))})
             countries_keys.append(key_value)
 
-        cv = CSVReader('data/wikipedia-iso-country-codes.csv')
+        cv = CSVReader('static/data/wikipedia-iso-country-codes.csv')
         tmp_arr = cv.read([1, 2])
         for i in range(0, len(tmp_arr), 2):
             countries_code_2_to_3_dict.update({tmp_arr[i]: tmp_arr[i + 1]})
@@ -69,52 +69,52 @@ class CountryCreator:
         countries_code_2_to_3_dict.pop('EH')
         countries_code_3_to_2_dict.pop('ESH')
 
-        cv = CSVReader('data/population014per.csv')
+        cv = CSVReader('static/data/population014per.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].young = float(tmp_arr[i])
 
-        cv = CSVReader('data/population1564per.csv')
+        cv = CSVReader('static/data/population1564per.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].middle = float(tmp_arr[i])
 
-        cv = CSVReader('data/population60upper.csv')
+        cv = CSVReader('static/data/population60upper.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].old = float(tmp_arr[i])
 
-        cv = CSVReader('data/hospital_beds_per_1k.csv')
+        cv = CSVReader('static/data/hospital_beds_per_1k.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].hospital_beds = float(tmp_arr[i])
 
-        cv = CSVReader('data/tourism_arvl.csv')
+        cv = CSVReader('static/data/tourism_arvl.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].arrive = float(tmp_arr[i]) / 365
 
-        cv = CSVReader('data/tourism_dprt.csv')
+        cv = CSVReader('static/data/tourism_dprt.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].departure = float(tmp_arr[i]) / 365
 
-        cv = CSVReader('data/density.csv')
+        cv = CSVReader('static/data/density.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].density = float(tmp_arr[i])
 
-        cv = CSVReader('data/air_departures.csv')
+        cv = CSVReader('static/data/air_departures.csv')
         tmp_arr = cv.read([62])
         for i in range(len(tmp_arr)):
             countries_arr[countries_keys[i]].air_departures = float(tmp_arr[i]) / 365
 
-        cv = CSVReader('data/wikipedia-iso-country-codes.csv')
+        cv = CSVReader('static/data/wikipedia-iso-country-codes.csv')
         tmp_arr = cv.read([2])
         countries_arr = dict(filter(lambda elem: elem[0] in tmp_arr, countries_arr.items()))
         countries_keys = list(filter(lambda elem: elem in countries_arr.keys(), countries_keys))
 
-        cv = CSVReader('data/borders.csv')
+        cv = CSVReader('static/data/borders.csv')
         tmp_arr = cv.read([0, 2])
         for i in range(0, len(tmp_arr), 2):
             if tmp_arr[i] in countries_code_2_to_3_dict.keys() and tmp_arr[i + 1] in countries_code_2_to_3_dict:
