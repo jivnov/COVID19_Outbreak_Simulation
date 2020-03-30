@@ -15,9 +15,10 @@ def deriv(y, t, N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alp
     return dSdt, dEdt, dIdt, dBdt, dQdt, dHdt, dRdt
 
 
-def seibqhr(c0, cb, r1, beta, q0, qm, r2, m, b, f, sigma, lamb, deltaI0, deltaIf, r3, gammaI, gammaH, alpha, S0, E0, I0,
-            B0, Q0, H0, R0):
+def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, sigma, lamb, deltaI0, deltaIf, r3,
+            gammaI, gammaH, alpha, S0, E0, I0, B0, Q0, H0, R0):
     """
+    :param day_after_infected: day after county got infected
     :param c0: Contact rate at the initial time
     :param cb: Minimum contact rate under the current control strategies
     :param r1: Exponential decreasing rate of contact rate
@@ -27,7 +28,9 @@ def seibqhr(c0, cb, r1, beta, q0, qm, r2, m, b, f, sigma, lamb, deltaI0, deltaIf
     :param r2: Exponential increasing rate of quarantined rate of exposed individuals
     :param m: Transition rate of susceptible individuals to the suspected class
     :param b: Detection rate of the suspected class
-    :param f: Confirmation ratio: Transition rate of exposed individuals in the suspected class to the quarantined infected class
+    :param f0: Confirmation ratio: Transition rate of exposed individuals in the suspected class to the quarantined infected class initial value
+    :param fm: Confirmation ratio: Transition rate of exposed individuals in the suspected class to the quarantined infected class maximum
+    :param r4: Exponential increasing rate of Confirmation ratio
     :param sigma: Transition rate of exposed individuals to the infected class
     :param lamb: Rate at which the quarantined uninfected contacts were released into the wider community
     :param deltaI0: Initial transition rate of symptomatic infected individuals to the quarantined infected class
@@ -50,11 +53,14 @@ def seibqhr(c0, cb, r1, beta, q0, qm, r2, m, b, f, sigma, lamb, deltaI0, deltaIf
     N = S0 + E0 + I0 + B0 + Q0 + H0 + R0
     y0 = S0, E0, I0, B0, Q0, H0, R0
 
-    c = (c0 - cb) * math.e ** -r1 + cb
-    q = (q0 - qm) * math.e ** -r2 + qm
-    deltaI = 1 / ((1 / deltaI0 - 1 / deltaIf) * math.e ** -r3 + 1 / deltaIf)
+    c = (c0 - cb) * math.e ** (-r1 * day_after_infected) + cb
+    q = (q0 - qm) * math.e ** (-r2 * day_after_infected) + qm
+    # q = (1 / (1 + math.e ** ((-day_after_infected + 54) / 3))) * qm
+    print(q)
+    deltaI = 1 / ((1 / deltaI0 - 1 / deltaIf) * math.e ** (-r3 * day_after_infected) + 1 / deltaIf)
+    f = (f0 - fm) * math.e ** (-r4 * day_after_infected) + fm
 
     ret = odeint(deriv, y0, t, args=(N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alpha))
     S, E, I, B, Q, H, R = ret.T
 
-    return S[-1], E[-1], I[-1], B[-1], Q[-1], H[-1], R[-1], c, q, deltaI
+    return S[-1], E[-1], I[-1], B[-1], Q[-1], H[-1], R[-1]
