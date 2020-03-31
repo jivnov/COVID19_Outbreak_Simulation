@@ -56,7 +56,6 @@ def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, 
     c = (c0 - cb) * math.e ** (-r1 * day_after_infected) + cb
     q = (q0 - qm) * math.e ** (-r2 * day_after_infected) + qm
     # q = (1 / (1 + math.e ** ((-day_after_infected + 54) / 3))) * qm
-    print(q)
     deltaI = 1 / ((1 / deltaI0 - 1 / deltaIf) * math.e ** (-r3 * day_after_infected) + 1 / deltaIf)
     f = (f0 - fm) * math.e ** (-r4 * day_after_infected) + fm
 

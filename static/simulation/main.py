@@ -14,8 +14,8 @@ INCUBATION_RATE = 1 / INCUBATION_PERIOD
 QUARANTINE_DURATION = 14
 QUARANTINE_RATE = 1 / QUARANTINE_DURATION
 
-RECOVERY_RATE_INFECTED = 0.33  # 0.33
-RECOVERY_RATE_CONFIRMED = 0.15  # 0.15
+RECOVERY_RATE_INFECTED = 0.1  # 0.33
+RECOVERY_RATE_CONFIRMED = 0.04  # 0.15
 
 total_road_arrives = 0
 total_air_arrives = 0
@@ -54,6 +54,7 @@ def infec(code, day):
     pop = countries_arr[code].population
     infec_people = countries_arr[code].infected + countries_arr[code].exposed
     infec_prob = infec_people / pop
+    tmp_control = 0
 
     for _ in range(int(road_dep)):
         if np.random.sample() < infec_prob:
@@ -64,8 +65,8 @@ def infec(code, day):
                     if (countries_arr[countries_arr[code].borders[prob_i - 1]]).infected == 0:
                         print(countries_arr[countries_arr[code].borders[prob_i - 1]].name + " INFECTED")
                         infected_countries_arr.append(countries_arr[code].borders[prob_i - 1])
-                        countries_arr[countries_arr[code].borders[prob_i - 1]].contact_rate_exp_rate = 0.007
-                        countries_arr[countries_arr[code].borders[prob_i - 1]].quarantined_rate_exp_rate = 0.007
+                        countries_arr[countries_arr[code].borders[prob_i - 1]].contact_rate_exp_rate = tmp_control
+                        countries_arr[countries_arr[code].borders[prob_i - 1]].quarantined_rate_exp_rate = tmp_control
                         countries_arr[countries_arr[code].borders[prob_i - 1]].diagnose_speed_exp_rate = 0.007
                         countries_arr[countries_arr[code].borders[prob_i - 1]].day_when_infected = day
                     countries_arr[countries_arr[code].borders[prob_i - 1]].infected += 1
@@ -101,9 +102,9 @@ def main(data):
         day_recovered = 0
 
         if day == 47:
-            countries_arr['CHN'].contact_rate_exp_rate = 0.02
-            countries_arr['CHN'].quarantined_rate_exp_rate = 0.1531
-            countries_arr['CHN'].diagnose_speed_exp_rate = 0.02
+            countries_arr['CHN'].contact_rate_exp_rate = 0.05
+            countries_arr['CHN'].quarantined_rate_exp_rate = 0.05
+            countries_arr['CHN'].diagnose_speed_exp_rate = 0.05
             countries_arr['CHN'].day_when_infected = day
 
 
@@ -138,7 +139,6 @@ def main(data):
                                                                B0=country.suspected, Q0=country.quarantined,
                                                                H0=country.confirmed,
                                                                R0=country.recovered)
-                print(day- country.day_when_infected)
 
                 country.deaths = country.population - country.confirmed - country.exposed - country.infected - \
                                  country.recovered - country.quarantined - country.suspected - country.susceptible
@@ -172,6 +172,7 @@ def main(data):
 
         print(countries_arr["CHN"].infected)
         print(countries_arr["CHN"].confirmed)
+        print(countries_arr["CHN"].recovered)
         print(countries_arr["CHN"].quarantined)
         print(countries_arr["CHN"].exposed)
         print(countries_arr["CHN"].suspected)
