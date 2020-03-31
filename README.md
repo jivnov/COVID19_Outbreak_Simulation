@@ -12,6 +12,11 @@ infected countries.\
 This simulation has a web interface written with Django framework.
 
 ### Prerequisites
+Firstly, you need your own [Mapbox](https://www.mapbox.com/) API Key.\
+Then put it into a file 'config.js' executing the next command from the project root folder:
+```
+echo "var config={MY_KEY:'PUT-YOUR-KEY-HERE'};" > ./static/scripts/config.js 
+```
 
 Use the package manager pip to install requirements
 
