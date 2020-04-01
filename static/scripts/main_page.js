@@ -46,19 +46,19 @@ async function update() {
     for (let i = 0; i < days; i++) {
 
 
-                await sendRequest(url, '', "GET").then((data) => {
-                    displayData(document.getElementById("confirmed"), data);
-                    displayData(document.getElementById("deaths"), data);
-                    displayData(document.getElementById("recovered"), data);
-                    integrate_plot(document.getElementById("plot"), data);
-                    colorize(data.value["infected_countries_arr"]);
-                    document.getElementById("day_target").innerText = "DAY: " + i
+        await sendRequest(url, '', "GET").then((data) => {
+            displayData(document.getElementById("confirmed"), data);
+            displayData(document.getElementById("true_cases"), data);
+            displayData(document.getElementById("deaths"), data);
+            displayData(document.getElementById("recovered"), data);
+            integrate_plot(document.getElementById("plot"), data);
+            colorize(data.value["infected_countries_arr"]);
+            document.getElementById("day_target").innerText = "DAY: " + i
 
 
-                })
-                url = 'get_data?user_input=' + days;
-                // colorize(infected)
-
+        })
+        url = 'get_data?user_input=' + days;
+        // colorize(infected)
 
 
     }

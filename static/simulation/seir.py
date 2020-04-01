@@ -57,7 +57,9 @@ def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, 
     q = (q0 - qm) * math.e ** (-r2 * day_after_infected) + qm
     # q = (1 / (1 + math.e ** ((-day_after_infected + 54) / 3))) * qm
     deltaI = 1 / ((1 / deltaI0 - 1 / deltaIf) * math.e ** (-r3 * day_after_infected) + 1 / deltaIf)
+
     f = (f0 - fm) * math.e ** (-r4 * day_after_infected) + fm
+
 
     ret = odeint(deriv, y0, t, args=(N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alpha))
     S, E, I, B, Q, H, R = ret.T
