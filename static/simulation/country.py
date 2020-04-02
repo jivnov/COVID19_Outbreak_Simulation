@@ -16,6 +16,7 @@ class Country:
         self.confirmed = 0
         self.deaths = 0
         self.recovered = 0
+        self.auto_recovered = 0
         self.infected = 0
         self.exposed = 0
         self.susceptible = population
@@ -32,7 +33,7 @@ class Country:
         self.contact_rate_0 = 15.0  # contact_rate 14.781
         self.contact_rate_min = 6.0  # 8.0
         self.contact_rate_exp_rate = 0.0  # 0.15
-        self.transmission_prob = 0.042  # 0.1911
+        self.transmission_prob = 0.0174  # 0.1911
         self.quarantined_rate_exposed_0 = 0.04  # 0.0001
         self.quarantined_rate_exposed_max = 0.98
         self.quarantined_rate_exp_rate = 0  # 0.1531
@@ -47,6 +48,7 @@ class Country:
         self.diagnose_speed_exp_rate = 0  # 0.2
         self.death_rate = 0.0045
         self.day_when_infected = 0
+        self.quarantine_mode = False
 
 
 class CountryCreator:

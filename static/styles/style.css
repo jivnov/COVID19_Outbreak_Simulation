@@ -142,11 +142,11 @@ html, body {
 }
 
 #cpt {
-    height: 80%;
+    height: 20%;
 }
 
 #cpb {
-    height: 20%;
+    height: 80%;
 }
 
 #confirmed_plate h1 {

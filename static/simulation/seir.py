@@ -4,19 +4,21 @@ import math as math
 
 
 def deriv(y, t, N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alpha):
-    S, E, I, B, Q, H, R = y
-    dSdt = - (((beta * c + c * q * (1 - beta)) * S * I) / N) - m * S + lamb * Q + b * (1 - f) * B
-    dEdt = ((beta * c * (1 - q) * S * I) / N) - sigma * E
+    S, E, I, B, Q, H, R, A = y
+    dSdt = - (((beta * c + c * q * (1 - beta)) * S * I) / N) - m * S + lamb * Q + b * (1 - f) * B - (
+                (beta * c * (1 - q) * S * E) / N)
+    dEdt = ((beta * c * (1 - q) * S * I) / N) - sigma * E + ((beta * c * (1 - q) * S * E) / N)
     dIdt = sigma * E - (deltaI + alpha + gammaI) * I
     dBdt = (beta * c * q * S * I) / N + m * S - b * B
     dQdt = ((1 - beta) * c * q * S * I) / N - lamb * Q
     dHdt = deltaI * I + b * f * B - (alpha + gammaH) * H
-    dRdt = gammaI * I + gammaH * H
-    return dSdt, dEdt, dIdt, dBdt, dQdt, dHdt, dRdt
+    dRdt = gammaH * H
+    dAdt = gammaI * I
+    return dSdt, dEdt, dIdt, dBdt, dQdt, dHdt, dRdt, dAdt
 
 
 def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, sigma, lamb, deltaI0, deltaIf, r3,
-            gammaI, gammaH, alpha, S0, E0, I0, B0, Q0, H0, R0):
+            gammaI, gammaH, alpha, S0, E0, I0, B0, Q0, H0, R0, A0):
     """
     :param day_after_infected: day after county got infected
     :param c0: Contact rate at the initial time
@@ -46,12 +48,13 @@ def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, 
     :param Q0: Initial quarantined susceptible population
     :param H0: Initial quarantined infected population
     :param R0: Initial recovered population
+    :param A0: Initial auto-recovered population
     :return:
     """
 
     t = np.linspace(0, 1, 2)
-    N = S0 + E0 + I0 + B0 + Q0 + H0 + R0
-    y0 = S0, E0, I0, B0, Q0, H0, R0
+    N = S0 + E0 + I0 + B0 + Q0 + H0 + R0 + A0
+    y0 = S0, E0, I0, B0, Q0, H0, R0, A0
 
     c = (c0 - cb) * math.e ** (-r1 * day_after_infected) + cb
     q = (q0 - qm) * math.e ** (-r2 * day_after_infected) + qm
@@ -60,8 +63,7 @@ def seibqhr(day_after_infected, c0, cb, r1, beta, q0, qm, r2, m, b, f0, fm, r4, 
 
     f = (f0 - fm) * math.e ** (-r4 * day_after_infected) + fm
 
-
     ret = odeint(deriv, y0, t, args=(N, c, beta, q, m, b, f, sigma, lamb, deltaI, gammaI, gammaH, alpha))
-    S, E, I, B, Q, H, R = ret.T
+    S, E, I, B, Q, H, R, A = ret.T
 
-    return S[-1], E[-1], I[-1], B[-1], Q[-1], H[-1], R[-1]
+    return S[-1], E[-1], I[-1], B[-1], Q[-1], H[-1], R[-1], A[-1]

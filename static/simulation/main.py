@@ -3,19 +3,20 @@ import numpy as np
 from static.simulation.country import CountryCreator
 from static.simulation.seir import seibqhr
 
+# TODO Add True Recovered
 countries_arr, countries_keys = CountryCreator.initialization()
 FATALITY_RATE = 0.01
 
 AIR_TRANSPORT_USAGE = 0.6
 ROAD_TRANSPORT_USAGE = 1 - AIR_TRANSPORT_USAGE
 
-INCUBATION_PERIOD = 7
+INCUBATION_PERIOD = 5.2
 INCUBATION_RATE = 1 / INCUBATION_PERIOD
 QUARANTINE_DURATION = 14
 QUARANTINE_RATE = 1 / QUARANTINE_DURATION
 
-RECOVERY_RATE_INFECTED = 0.053  # 0.33
-RECOVERY_RATE_CONFIRMED = 0.025  # 0.15
+RECOVERY_RATE_INFECTED = 0.08  # 0.33
+RECOVERY_RATE_CONFIRMED = 0.04  # 0.15
 
 total_road_arrives = 0
 total_air_arrives = 0
@@ -31,6 +32,7 @@ total_cases_arr = []
 true_cases_arr = []
 total_deaths_arr = []
 total_recovered_arr = []
+total_true_recovered_arr = []
 infected_countries_arr = []
 data_transmitter = 0
 
@@ -55,9 +57,6 @@ def infec(code, day):
     pop = countries_arr[code].population
     infec_people = countries_arr[code].infected + countries_arr[code].exposed
     infec_prob = infec_people / pop
-    oc_contact_rate_exp_rate = 0.003
-    oc_quarantined_rate_exp_rate = 0.003
-    oc_diagnose_speed_exp_rate = 0.02
 
     for _ in range(int(road_dep)):
         if np.random.sample() < infec_prob:
@@ -68,13 +67,9 @@ def infec(code, day):
                     if countries_arr[code].borders[prob_i - 1] not in infected_countries_arr:
                         print(countries_arr[countries_arr[code].borders[prob_i - 1]].name + " INFECTED")
                         infected_countries_arr.append(countries_arr[code].borders[prob_i - 1])
-                        countries_arr[countries_arr[code].borders[prob_i - 1]].contact_rate_exp_rate = oc_contact_rate_exp_rate
-                        countries_arr[countries_arr[code].borders[prob_i - 1]].quarantined_rate_exp_rate = oc_quarantined_rate_exp_rate
-                        countries_arr[countries_arr[code].borders[prob_i - 1]].diagnose_speed_exp_rate = oc_diagnose_speed_exp_rate
                         countries_arr[countries_arr[code].borders[prob_i - 1]].day_when_infected = day
                     countries_arr[countries_arr[code].borders[prob_i - 1]].infected += 1
                     countries_arr[code].infected -= 1
-
 
                     break
 
@@ -86,17 +81,13 @@ def infec(code, day):
                     if countries_keys[prob_i] not in infected_countries_arr:
                         print(countries_arr[countries_keys[prob_i]].name + " INFECTED")
                         infected_countries_arr.append(countries_keys[prob_i])
-                        countries_arr[countries_keys[prob_i]].contact_rate_exp_rate = oc_contact_rate_exp_rate
-                        countries_arr[countries_keys[prob_i]].quarantined_rate_exp_rate = oc_quarantined_rate_exp_rate
-                        countries_arr[countries_keys[prob_i]].diagnose_speed_exp_rate = oc_diagnose_speed_exp_rate
+
                         countries_arr[countries_keys[prob_i]].day_when_infected = day
                     countries_arr[countries_keys[prob_i]].infected += 1
                     countries_arr[countries_keys[prob_i]].population += 1
 
                     countries_arr[code].infected -= 1
                     countries_arr[code].population -= 1
-
-
 
                     break
 
@@ -108,48 +99,59 @@ def main(data):
         day_cases = 0
         true_cases = 0
         day_recovered = 0
+        day_true_recovered = 0
+        oc_contact_rate_exp_rate = 0.005
+        oc_quarantined_rate_exp_rate = 0.005
+        oc_diagnose_speed_exp_rate = 0.05
 
         if day == 47:
-            countries_arr['CHN'].contact_rate_exp_rate = 0.053
-            countries_arr['CHN'].quarantined_rate_exp_rate = 0.053
-            countries_arr['CHN'].diagnose_speed_exp_rate = 0.022
+            countries_arr['CHN'].contact_rate_exp_rate = 0.05
+            countries_arr['CHN'].quarantined_rate_exp_rate = 0.05
+            countries_arr['CHN'].diagnose_speed_exp_rate = 0.1
             countries_arr['CHN'].day_when_infected = day
-
-
+            countries_arr['CHN'].quarantine_mode = True
 
         for code, country in countries_arr.items():
 
             if country.infected > 0 or country.exposed > 0:
 
+                if not country.quarantine_mode and (
+                        country.confirmed + country.recovered) / country.population > 0.000001:
+                    country.contact_rate_exp_rate = oc_contact_rate_exp_rate
+                    country.quarantined_rate_exp_rate = oc_quarantined_rate_exp_rate
+                    country.diagnose_speed_exp_rate = oc_diagnose_speed_exp_rate
+
                 country.susceptible, country.exposed, country.infected, country.suspected, country.quarantined, \
-                country.confirmed, country.recovered = seibqhr(day_after_infected=day - country.day_when_infected,
-                                                               c0=country.contact_rate_0, cb=country.contact_rate_min,
-                                                               r1=country.contact_rate_exp_rate,
-                                                               beta=country.transmission_prob,
-                                                               q0=country.quarantined_rate_exposed_0,
-                                                               qm=country.quarantined_rate_exposed_max,
-                                                               r2=country.quarantined_rate_exp_rate,
-                                                               m=country.susceptible_to_suspected_rate,
-                                                               b=country.detection_rate,
-                                                               f0=country.suspected_to_confirmed_0,
-                                                               fm=country.suspected_to_confirmed_max,
-                                                               r4=country.suspected_to_confirmed_exp_rate,
-                                                               sigma=INCUBATION_RATE,
-                                                               lamb=QUARANTINE_RATE,
-                                                               deltaI0=country.infected_to_confirmed_min,
-                                                               deltaIf=country.infected_to_confirmed_max,
-                                                               r3=country.diagnose_speed_exp_rate,
-                                                               gammaI=RECOVERY_RATE_INFECTED,
-                                                               gammaH=RECOVERY_RATE_CONFIRMED,
-                                                               alpha=country.death_rate,
-                                                               S0=country.susceptible, E0=country.exposed,
-                                                               I0=country.infected,
-                                                               B0=country.suspected, Q0=country.quarantined,
-                                                               H0=country.confirmed,
-                                                               R0=country.recovered)
+                country.confirmed, country.recovered, country.auto_recovered = seibqhr(
+                    day_after_infected=day - country.day_when_infected,
+                    c0=country.contact_rate_0, cb=country.contact_rate_min,
+                    r1=country.contact_rate_exp_rate,
+                    beta=country.transmission_prob,
+                    q0=country.quarantined_rate_exposed_0,
+                    qm=country.quarantined_rate_exposed_max,
+                    r2=country.quarantined_rate_exp_rate,
+                    m=country.susceptible_to_suspected_rate,
+                    b=country.detection_rate,
+                    f0=country.suspected_to_confirmed_0,
+                    fm=country.suspected_to_confirmed_max,
+                    r4=country.suspected_to_confirmed_exp_rate,
+                    sigma=INCUBATION_RATE,
+                    lamb=QUARANTINE_RATE,
+                    deltaI0=country.infected_to_confirmed_min,
+                    deltaIf=country.infected_to_confirmed_max,
+                    r3=country.diagnose_speed_exp_rate,
+                    gammaI=RECOVERY_RATE_INFECTED,
+                    gammaH=RECOVERY_RATE_CONFIRMED,
+                    alpha=country.death_rate,
+                    S0=country.susceptible, E0=country.exposed,
+                    I0=country.infected,
+                    B0=country.suspected, Q0=country.quarantined,
+                    H0=country.confirmed,
+                    R0=country.recovered,
+                    A0=country.auto_recovered)
 
                 country.deaths = country.population - country.confirmed - country.exposed - country.infected - \
-                                 country.recovered - country.quarantined - country.suspected - country.susceptible
+                                 country.recovered - country.quarantined - country.suspected - country.susceptible - country.auto_recovered
 
                 country.infected_arr.append(country.confirmed + country.infected + country.exposed)
                 country.deaths_arr.append(country.deaths)
