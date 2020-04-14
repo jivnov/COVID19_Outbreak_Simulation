@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<script src="{% static 'scripts/config.js' %}"></script>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
+<script src="{% static 'scripts/main_page.js' %}"></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet'/>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="main">
+    <div id="left_side" class="plate">
+        <div id="up_bar" class="plate">
+        <p id="name">COVID19 OUTBREAK SIMULATION</p>
+        </div>
+        <div id="up_layer">
+            <div id="full_left_layer">
+            <div id="up_left_layer">
+                <div class="plate" id="map_plate">
+                    <div id="map_with_text">
+                        <div id='map'>
+
+                        </div>
+                        <div id="map_text">
+                            <p id="day_target">DAY: 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div id="up_right_layer">
+                    <div class="plate" id="simulationField">
+
+                    </div>
+                    <div class="plate" id="plot_plate">
+                        <img id="plot" src="" alt=""/>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div id="right_side">
+        <div id="right_layer">
+
+            <div class="plate" id="it1">
+                <h2>Options</h2>
+            </div>
+            <div class="plate" id="it2">
+                <h4>True Cases</h4>
+                <h1 id="true_cases">null</h1>
+            </div>
+            <div class="plate" id="it3">
+                <h4>Confirmed</h4>
+                <h1 id="confirmed">null</h1>
+            </div>
+            <div class="plate" id="it4">
+                <h4>Deaths</h4>
+                <h1 id="deaths">null</h1>
+            </div>
+            <div class="plate" id="it5">
+                <h4>Recovered</h4>
+                <h1 id="recovered">null</h1>
+            </div>
+            <div class="plate" id="simulate">
+                <button id="simulate_btn" onclick="update()">SIMULATE</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="{% static 'scripts/map.js' %}"></script>
+{% endblock content %}
+
