@@ -16,6 +16,14 @@ html, body {
     text-align: center;
 }
 
+.plate_data{
+    background-color: #191919;
+   
+    border: 1px solid #e15000;
+    margin: 5px;
+    text-align: center;
+}
+
 #main {
     height: 100%;
     display: flex;
@@ -53,6 +61,52 @@ html, body {
     flex-direction: row;
     justify-content: center;
 }
+
+#left{
+    width:50%;
+}
+
+#right{
+    width: 50%;
+}
+
+#sim{
+    height: 8% ;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 3px solid red;
+}
+
+.conf{
+    height: 23% ;
+    justify-content: center;
+    border-bottom: 3px solid red;
+}
+
+.true{
+    height: 23% ;
+    justify-content: center;
+    border-bottom: 3px solid red;
+}
+
+.dth{
+    height: 23% ;  
+    justify-content: center ;
+    border-bottom: 3px solid red;
+}
+
+.rec{
+    height: 23% ;
+    justify-content: center;
+}
+
+#real{
+    height: 8% ;
+    justify-content: center;
+    border-bottom: 3px solid red;
+}
+
+
 
 #full_left_layer {
     display: flex;
@@ -165,7 +219,7 @@ html, body {
 
 
 #map_plate {
-    width: 80%;
+    width: 100%;
     display: flex;
     justify-content: space-around;
     flex-direction: column;
